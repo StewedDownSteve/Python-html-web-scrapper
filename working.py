@@ -1,40 +1,49 @@
 import requests
 from bs4 import BeautifulSoup
-import warnings
-warnings.filterwarnings("ignore", message=".*urllib3.*")
 
-
-
-import requests
-from bs4 import BeautifulSoup
-
-# URL of the "Books to Scrape" website
+# URL of the "Books to Scrape" website, made as var so its easy to call
 url = 'http://books.toscrape.com/catalogue/category/books/classics_6/index.html'
 
-# Send a request to the website
+# Send a request to the website url, stored above
 response = requests.get(url)
 
-# Check if the request was successful (status code 200)
+# Check if the request was successful (status code 200), for trouble shooting
 print(f"HTTP Status Code: {response.status_code}")
 
-# If status code is 200, proceed to parse the content
+# If status code is 200 (good to go), proceed to parse the content,
 if response.status_code == 200:
-    # Parse the content of the page
+    # Parse the content of the page using html.parser
     soup = BeautifulSoup(response.text, 'html.parser')
 
     # Find all books in the "Classics" category
-    books = soup.find_all('li', class_='col-xs-6 col-sm-4 col-md-3')
+    books = soup.find_all('article', class_='product_pod')  # Updated to target the correct tag
 
     # Print the titles of all books in the "Classics" category
     for book in books:
-        title_tag = book.find('h3')
+        title_tag = book.find('h3')  # Each book title is within an h3 tag
         if title_tag:
-            # Extract and print the title
-            title = title_tag.find('a').get('title')
+            # Extract and print the title from the <a> tag's title attribute
+            title = title_tag.find('a')['title']
             print(title)
 else:
     print("Failed to retrieve the page.")
 
+# Changes 1/11/25
+# Instead of li with a specific class, the script now searches for article tags with the class product_pod. This is the tag that wraps each book on the website.
+
+# To prevent errors, the script checks for the existence of the h3 and a tags before trying to access attributes.
+
+
+
+
+
+
+
+
+
+
+
+# Old attempt from indeed.com, indeed blocked attempts -------------------------
 
 
 
